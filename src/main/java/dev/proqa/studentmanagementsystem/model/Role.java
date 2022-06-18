@@ -1,12 +1,14 @@
-package dev.proqa.studentmanagementsystem.entities;
+package dev.proqa.studentmanagementsystem.model;
 
-import dev.proqa.studentmanagementsystem.entities.enumeration.UserRole;
+import dev.proqa.studentmanagementsystem.model.enumeration.UserRole;
 import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name ="roles")
 public class Role {
@@ -20,5 +22,10 @@ public class Role {
     private UserRole userRole;
 
 
-
+    @Override
+    public String toString() {
+        return "Role{" +
+                "userRole=" + userRole +
+                '}';
+    }
 }
