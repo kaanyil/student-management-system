@@ -56,7 +56,7 @@ public class UserService {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
 
-        Role userRole = roleRepo.findByUserRole(UserRole.ROLE_STUDENT)
+        Role userRole = roleRepo.findByName(UserRole.ROLE_STUDENT)
                 .orElseThrow(() -> new ResolutionException("Error: Role is not found."));
 
         user.setRole(userRole);

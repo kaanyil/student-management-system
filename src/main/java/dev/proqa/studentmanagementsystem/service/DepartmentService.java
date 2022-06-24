@@ -18,11 +18,9 @@ public class DepartmentService {
     private final StudentRepository studentRepository;
 
 
-
     public List<StudentDTO> findStudentsByDepartmentName(Departments departmentName) {
-        Department department = departmentRepository.findByDepartment(departmentName)
+        Department department = departmentRepository.findByName(departmentName)
                 .orElseThrow(() -> new RuntimeException("Error: Department is not found."));
-
         return studentRepository.findByDepartment(department);
     }
 }

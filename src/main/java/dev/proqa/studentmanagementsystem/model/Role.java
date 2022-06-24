@@ -19,13 +19,13 @@ public class Role {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
-    private UserRole userRole;
+    private UserRole name;
 
 
     @Override
     public String toString() {
         return "Role{" +
-                "userRole=" + userRole +
+                "userRole=" + name +
                 '}';
     }
 

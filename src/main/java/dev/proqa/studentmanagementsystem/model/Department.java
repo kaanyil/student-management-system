@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -27,13 +26,13 @@ public class Department implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(length = 30, nullable = false)
     @JoinColumn(name = "student_id", referencedColumnName = "id", nullable = false)
-    private Departments department;
+    private Departments name;
 
     @OneToMany(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
     @JoinColumn(name = "student_id", referencedColumnName = "id", nullable = false)
     private List<Student> students;
 
     public Department(Departments department) {
-        this.department = department;
+        this.name = department;
     }
 }

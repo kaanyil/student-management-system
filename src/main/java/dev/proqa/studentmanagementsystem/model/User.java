@@ -100,7 +100,7 @@ public class User implements Serializable {
 
     public User(String firstName, String lastName, String email, String username, String password,
                 String address, String city, String state, String zipCode, String country,
-                String phoneNumber, String gender, Role role) {
+                String phoneNumber, String gender) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -113,7 +113,6 @@ public class User implements Serializable {
         this.country = country;
         this.phoneNumber = phoneNumber;
         this.gender = gender;
-        this.role = role;
 
     }
 

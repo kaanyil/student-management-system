@@ -46,40 +46,40 @@ public class StudentService {
     }
 
 
-    public void addStudent(Student student)
+    public void addStudent(Long userId, StudentDTO studentDTO)
             throws BadRequestException {
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new ResourceNotFoundException(String.format(USER_NOT_FOUND_MSG, userId)));
 
-         student = Student.builder()
-                .firstName(student.getFirstName())
-                .lastName(student.getLastName())
-                .email(student.getEmail())
-                .username(student.getUsername())
-                .address(student.getAddress())
-                .city(student.getCity())
-                .state(student.getState())
-                .zipCode(student.getZipCode())
-                .country(student.getCountry())
-                .phoneNumber(student.getPhoneNumber())
-                .gender(student.getGender())
-                .role(student.getRole())
-                .build();
+        Department departments = departmentRepository.findByName(studentDTO.getDepartment())
+                .orElseThrow(() -> new RuntimeException("Error: Department is not found."));
 
-        Department department = departmentRepository.getById(student.getId());
-        student.setDepartment(department);
-
-        String encodedPassword = passwordEncoder.encode(student.getPassword());
-        student.setPassword(encodedPassword);
-
-
-        if (studentRepo.existsByEmail(student.getEmail())) {
-            throw new ConflictException("Error: Email is already in use!");
-        }
-
-        if (studentRepo.existsByUsername(student.getUsername())) {
-            throw new ConflictException("Error: Username is already in use!");
-        }
+        Student student = new Student(user, departments);
 
         studentRepo.save(student);
+
+    }
+
+    public void updateStudent(Long userId, StudentDTO studentDTO) throws BadRequestException{
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new ResourceNotFoundException(String.format(USER_NOT_FOUND_MSG, userId)));
+
+        Student student = studentRepo.findByUserId(user).orElseThrow(() ->
+                new ResourceNotFoundException(String.format(STUDENT_NOT_FOUND_MSG, userId)));
+
+        Department departments = departmentRepository.findByName(studentDTO.getDepartment())
+                .orElseThrow(() -> new RuntimeException("Error: Department is not found."));
+
+        student.setDepartment(departments);
+
+        studentRepo.save(student);
+    }
+
+    public void deleteById(Long id) throws BadRequestException {
+        studentRepo.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException(String.format(STUDENT_NOT_FOUND_MSG, id)));
+
+        studentRepo.deleteById(id);
     }
 
 

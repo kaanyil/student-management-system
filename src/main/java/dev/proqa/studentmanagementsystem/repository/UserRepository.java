@@ -26,8 +26,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<UserDTO> findAllBy();
 
-    Student findStudentByRole(UserRole role);
-
     Boolean existsByEmail(String email);
 
     Boolean existsByUsername(String username);
@@ -42,7 +40,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
                 String userName, String address, String city, String zipCode,
                 String state, String country, String gender)
             throws BadRequestException;
-
-
 
 }
