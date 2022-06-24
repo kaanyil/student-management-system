@@ -1,82 +1,51 @@
 package dev.proqa.studentmanagementsystem.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.proqa.studentmanagementsystem.model.Role;
 import dev.proqa.studentmanagementsystem.model.User;
+import io.dropwizard.validation.OneOf;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-
-@Setter
 @Getter
-@NoArgsConstructor
+@Setter
 @AllArgsConstructor
 public class UserDTO {
 
-    @Size(max = 15)
-    @NotNull(message = "Please enter your first name")
+
     private String firstName;
-
-    @Size(max = 15)
-    @NotNull(message = "Please enter your last name")
     private String lastName;
-
-    @JsonIgnore
-    private String password;
-
-    @Pattern(regexp = "^((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$",
-            message = "Please enter valid phone number")
-    @Size(min = 14, max = 14, message = "Phone number should be exact 10 characters")
-    @NotNull(message = "Please enter your phone number")
-    private String phoneNumber;
-
-    @Email(message = "Please enter valid email")
-    @Size(min = 5, max = 150)
-    @NotNull(message = "Please enter your email")
     private String email;
-
-    @Size(max = 250)
-    @NotNull(message = "Please enter your address")
+    private String username;
     private String address;
-
-    @Size(max = 15)
-    @NotNull(message = "Please enter your zip code")
+    private String city;
+    private String state;
     private String zipCode;
-
+    private String country;
+    private String phoneNumber;
+    private String gender;
     private Role role;
 
-    private String gender;
 
-
-    public UserDTO(String firstName, String lastName, String phoneNumber, String email,
-                   String address, String zipCode, Role role, String gender) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-        this.address = address;
-        this.zipCode = zipCode;
-        this.role = role;
-        this.gender = gender;
-
-    }
-
-    public UserDTO(User user) {
+    public UserDTO (User user){
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
-        this.phoneNumber = user.getPhoneNumber();
         this.email = user.getEmail();
+        this.username = user.getUsername();
         this.address = user.getAddress();
+        this.city = user.getCity();
         this.zipCode = user.getZipCode();
-        this.role = user.getRole();
+        this.state = user.getState();
+        this.country = user.getCountry();
+        this.phoneNumber = user.getPhoneNumber();
         this.gender = user.getGender();
-
+        this.role = user.getRole();
     }
+
 }

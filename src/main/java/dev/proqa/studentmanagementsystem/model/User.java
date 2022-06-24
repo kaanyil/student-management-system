@@ -13,9 +13,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.ArrayList;
 
-import static javax.persistence.FetchType.EAGER;
 
 
 @Getter
@@ -95,7 +93,7 @@ public class User implements Serializable {
     @Column(nullable = false, length = 6)
     private String gender;
 
-    @ManyToOne(fetch=FetchType.EAGER, optional=true, cascade=CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     private Role role;
 
@@ -116,5 +114,7 @@ public class User implements Serializable {
         this.phoneNumber = phoneNumber;
         this.gender = gender;
         this.role = role;
+
     }
+
 }

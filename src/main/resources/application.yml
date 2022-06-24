@@ -5,7 +5,7 @@ server:
     include-stacktrace: never
   port: 8080
   servlet:
-    context-path: /std-mgmt-sys/api
+    context-path: /sms/api
 
 spring:
   datasource:
