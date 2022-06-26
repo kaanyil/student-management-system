@@ -25,13 +25,14 @@ public class Student implements Serializable {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User userId;
 
-    @ManyToOne
-    @JoinColumn(name = "department_id", referencedColumnName = "id", nullable = false)
-    @NotNull(message = "Please choose department")
-    private Department department;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "department_id", nullable = false)
+    private Department departmentId;
 
     public Student(User userId, Department department) {
         this.userId = userId;
-        this.department = department;
+        this.departmentId = department;
     }
+
+
 }

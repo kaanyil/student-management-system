@@ -1,12 +1,10 @@
 package dev.proqa.studentmanagementsystem.dto;
 
-import dev.proqa.studentmanagementsystem.model.User;
 import dev.proqa.studentmanagementsystem.model.enumeration.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.Email;
@@ -17,7 +15,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @AllArgsConstructor
-public class UserDTO {
+public class AdminDTO {
 
     private String firstName;
 
@@ -33,6 +31,11 @@ public class UserDTO {
     @Size(min = 8, max = 20)
     @NotNull(message = "Please enter your username")
     private String username;
+
+    @Pattern(regexp="^[a-zA-Z0-9]{4}")
+    @Size(min = 4, max = 60, message = "Please enter min 4 characters")
+    @NotNull(message = "Please enter your password")
+    private String password;
 
     @Size(max = 250)
     @NotNull(message = "Please enter your address")
@@ -63,17 +66,5 @@ public class UserDTO {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    public UserDTO(User user) {
-        this.firstName = user.getFirstName();
-        this.lastName = user.getLastName();
-        this.phoneNumber = user.getPhoneNumber();
-        this.email = user.getEmail();
-        this.username = user.getUsername();
-        this.zipCode = user.getZipCode();
-        this.city = user.getCity();
-        this.country = user.getCountry();
-        this.state = user.getState();
-        this.address = user.getAddress();
-        this.gender = user.getGender();
-    }
+    private String role;
 }

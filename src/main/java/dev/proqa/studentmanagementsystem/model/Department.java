@@ -22,17 +22,13 @@ public class Department implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
-    @Enumerated(EnumType.STRING)
     @Column(length = 30, nullable = false)
-    @JoinColumn(name = "student_id", referencedColumnName = "id", nullable = false)
-    private Departments name;
+    private String name;
 
-    @OneToMany(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
-    @JoinColumn(name = "student_id", referencedColumnName = "id", nullable = false)
+    @OneToMany(mappedBy = "departmentId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Student> students;
 
-    public Department(Departments department) {
-        this.name = department;
+    public Department(String name) {
+        this.name = name;
     }
 }

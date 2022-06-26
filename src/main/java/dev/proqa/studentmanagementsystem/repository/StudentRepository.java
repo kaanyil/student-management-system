@@ -19,11 +19,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     Optional<StudentDTO> findByUserIdOrderByUserId(User userId) throws ResourceNotFoundException;
 
-    Optional<Student> findByUserId(User userId) throws ResourceNotFoundException;
-
     Optional<StudentDTO> findByIdOrderById(Long id);
-
-    List<StudentDTO> findByDepartment(Department department);
 
     List<StudentDTO> findAllBy();
 

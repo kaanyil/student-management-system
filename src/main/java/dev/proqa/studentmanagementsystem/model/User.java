@@ -1,19 +1,20 @@
 package dev.proqa.studentmanagementsystem.model;
 
 
-import io.dropwizard.validation.OneOf;
+
+
+
+import dev.proqa.studentmanagementsystem.model.enumeration.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-
 
 
 @Getter
@@ -49,8 +50,8 @@ public class User implements Serializable {
     @Column(nullable = false, unique = true, length = 20)
     private String username;
 
-//    @Pattern(regexp = "^[a-zA-Z0-9]{4}", message = "length must be 3")
-    @Size(min = 4, max = 60, message = "Please enter min 4 characters")
+    @Pattern(regexp = "^[a-zA-Z0-9]{4}")
+    @Size(min = 4, max = 120, message = "Please enter min 4 characters")
     @NotNull(message = "Please enter your password")
     @Column(nullable = false, length = 120)
     private String password;
@@ -87,11 +88,8 @@ public class User implements Serializable {
     @Column(nullable = false, length = 14)
     private String phoneNumber;
 
-    @Size(max = 6)
-    @NotNull(message = "Please enter your gender that should be Female or Male")
-    @OneOf(value = {"Female", "Male"}, ignoreCase = true, ignoreWhitespace = true)
-    @Column(nullable = false, length = 6)
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "role_id", referencedColumnName = "id")
@@ -100,7 +98,7 @@ public class User implements Serializable {
 
     public User(String firstName, String lastName, String email, String username, String password,
                 String address, String city, String state, String zipCode, String country,
-                String phoneNumber, String gender) {
+                String phoneNumber, Gender gender) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -113,6 +111,26 @@ public class User implements Serializable {
         this.country = country;
         this.phoneNumber = phoneNumber;
         this.gender = gender;
+
+    }
+
+
+    public User(String firstName, String lastName, String email, String username, String password,
+                String address, String city, String state, String zipCode, String country,
+                String phoneNumber, Gender gender, Role role) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.address = address;
+        this.city = city;
+        this.state = state;
+        this.zipCode = zipCode;
+        this.country = country;
+        this.phoneNumber = phoneNumber;
+        this.gender = gender;
+        this.role = role;
 
     }
 

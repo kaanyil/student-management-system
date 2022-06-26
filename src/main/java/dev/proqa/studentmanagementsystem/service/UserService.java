@@ -1,10 +1,12 @@
 package dev.proqa.studentmanagementsystem.service;
 
+import dev.proqa.studentmanagementsystem.dto.AdminDTO;
 import dev.proqa.studentmanagementsystem.dto.StudentDTO;
 import dev.proqa.studentmanagementsystem.dto.UserDTO;
 import dev.proqa.studentmanagementsystem.exception.AuthException;
 import dev.proqa.studentmanagementsystem.exception.BadRequestException;
 import dev.proqa.studentmanagementsystem.exception.ConflictException;
+import dev.proqa.studentmanagementsystem.exception.ResourceNotFoundException;
 import dev.proqa.studentmanagementsystem.model.Role;
 import dev.proqa.studentmanagementsystem.model.Student;
 import dev.proqa.studentmanagementsystem.model.User;
@@ -30,14 +32,15 @@ public class UserService {
 
 
     public List<UserDTO> fetchAllUsers() {
-
         return userRepo.findAllBy();
     }
 
-
+    public List<UserDTO> fetchAllStudents() {
+        Role role = roleRepo.getByUserRole(UserRole.ROLE_STUDENT);
+        return userRepo.findByRole(role);
+    }
 
     public UserDTO findById(Long id) {
-
         return userRepo.findByIdOrderById(id).
                 orElseThrow(() -> new ResolutionException(String.format(USER_NOT_FOUND_MSG, id)));
     }
@@ -56,7 +59,7 @@ public class UserService {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
 
-        Role userRole = roleRepo.findByName(UserRole.ROLE_STUDENT)
+        Role userRole = roleRepo.findByUserRole(UserRole.ROLE_STUDENT)
                 .orElseThrow(() -> new ResolutionException("Error: Role is not found."));
 
         user.setRole(userRole);
@@ -74,6 +77,33 @@ public class UserService {
         } catch (Exception e) {
             throw new AuthException("Invalid credentials");
         }
+    }
+
+    public void addUserAuth(AdminDTO adminDTO) throws BadRequestException {
+
+        boolean emailExist = userRepo.existsByEmail(adminDTO.getEmail());
+        boolean usernameExist = userRepo.existsByUsername(adminDTO.getUsername());
+
+        if (emailExist) {
+            throw new BadRequestException("Error: Email already in use!");
+        }
+
+        if (usernameExist) {
+            throw new BadRequestException("Error: Username already in use!");
+        }
+
+        String encodedPassword = passwordEncoder.encode(adminDTO.getPassword());
+        adminDTO.setPassword(encodedPassword);
+
+        Role role = addRole(adminDTO.getRole());
+
+        User updatedUser = new User(adminDTO.getFirstName(), adminDTO.getLastName(),
+                adminDTO.getEmail(), adminDTO.getUsername(), adminDTO.getPassword(),
+                adminDTO.getAddress(), adminDTO.getCity(), adminDTO.getState(),
+                adminDTO.getZipCode(), adminDTO.getCountry(), adminDTO.getPhoneNumber(), adminDTO.getGender(),
+                role);
+
+        userRepo.save(updatedUser);
     }
 
 
@@ -94,8 +124,82 @@ public class UserService {
 
         userRepo.update(id, userDTO.getFirstName(), userDTO.getLastName(), userDTO.getPhoneNumber(),
                 userDTO.getEmail(), userDTO.getUsername(), userDTO.getAddress(), userDTO.getCity(),
-                userDTO.getZipCode(), userDTO.getState(), userDTO.getCountry(), userDTO.getGender());
+                userDTO.getZipCode(), userDTO.getState(), userDTO.getCountry(), userDTO.getGender().name());
 
     }
+
+    public void updatePassword(Long id, String newPassword, String oldPassword) throws BadRequestException {
+
+        User user = userRepo.getById(id);
+
+        if (!BCrypt.hashpw(oldPassword, user.getPassword()).equals(user.getPassword()))
+            throw new BadRequestException("password does not match");
+
+        String hashedPassword = passwordEncoder.encode(newPassword);
+
+        user.setPassword(hashedPassword);
+
+        userRepo.save(user);
+    }
+
+    public void updateUserAuth(Long id, AdminDTO adminDTO) throws BadRequestException {
+        User user = userRepo.findById(id).orElseThrow(() ->
+                new ResolutionException(String.format(USER_NOT_FOUND_MSG, id)));
+
+        boolean emailExist = userRepo.existsByEmail(adminDTO.getEmail());
+        boolean usernameExist = userRepo.existsByUsername(adminDTO.getUsername());
+
+        if (emailExist && !adminDTO.getEmail().equals(user.getEmail())) {
+            throw new BadRequestException("Error: Email already in use!");
+        }
+
+        if (usernameExist && !adminDTO.getUsername().equals(user.getUsername())) {
+            throw new BadRequestException("Error: Username already in use!");
+        }
+
+        if (adminDTO.getPassword() == null)
+            adminDTO.setPassword(user.getPassword());
+
+        else {
+            String encodedPassword = passwordEncoder.encode(adminDTO.getPassword());
+            adminDTO.setPassword(encodedPassword);
+        }
+
+        Role role = addRole(adminDTO.getRole());
+
+        User updatedUser = new User(id, adminDTO.getFirstName(), adminDTO.getLastName(),
+                adminDTO.getEmail(), adminDTO.getUsername(), adminDTO.getPassword(),
+                adminDTO.getAddress(), adminDTO.getCity(), adminDTO.getState(),
+                adminDTO.getZipCode(), adminDTO.getCountry(), adminDTO.getPhoneNumber(), adminDTO.getGender(),
+                role);
+
+        userRepo.save(updatedUser);
+    }
+
+    public void removeById(Long id) throws ResourceNotFoundException {
+        userRepo.findById(id).orElseThrow(() ->
+                new ResolutionException(String.format(USER_NOT_FOUND_MSG, id)));
+
+        userRepo.deleteById(id);
+    }
+
+    private Role addRole(String role) {
+
+        if (role == null){
+            return roleRepo.findByUserRole(UserRole.ROLE_STUDENT)
+                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        }
+        else {
+            if ("Administrator".equals(role)) {
+                return roleRepo.findByUserRole(UserRole.ROLE_ADMIN)
+                        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+            }
+            else {
+                return roleRepo.findByUserRole(UserRole.ROLE_STUDENT)
+                        .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+            }
+        }
+    }
+
 }
 

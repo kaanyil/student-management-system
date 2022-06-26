@@ -1,8 +1,6 @@
 package dev.proqa.studentmanagementsystem.service;
 
-import dev.proqa.studentmanagementsystem.dto.StudentDTO;
 import dev.proqa.studentmanagementsystem.model.Department;
-import dev.proqa.studentmanagementsystem.model.enumeration.Departments;
 import dev.proqa.studentmanagementsystem.repository.DepartmentRepository;
 import dev.proqa.studentmanagementsystem.repository.StudentRepository;
 import lombok.AllArgsConstructor;
@@ -14,13 +12,25 @@ import java.util.List;
 @Service
 public class DepartmentService {
 
+    private static final String DEPARTMENT_NOT_FOUND_MSG = "Department with id %d not found";
     private final DepartmentRepository departmentRepository;
     private final StudentRepository studentRepository;
 
 
-    public List<StudentDTO> findStudentsByDepartmentName(Departments departmentName) {
-        Department department = departmentRepository.findByName(departmentName)
-                .orElseThrow(() -> new RuntimeException("Error: Department is not found."));
-        return studentRepository.findByDepartment(department);
+    public List<Department> findAllDepartments() {
+        return departmentRepository.findAll();
     }
+
+    public Department findById(Long id) {
+
+        return departmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException(String.format(DEPARTMENT_NOT_FOUND_MSG, id)));
+    }
+
+    public void createDepartment(Department department){
+
+        departmentRepository.save(department);
+
+    }
+
 }

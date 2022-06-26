@@ -13,6 +13,7 @@ import java.util.Optional;
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Integer> {
 
-    Optional<Role> findByName(UserRole userRole) throws ResourceNotFoundException;
+    Optional<Role> findByUserRole(UserRole userRole);;
 
+    Role getByUserRole(UserRole userRole);
 }

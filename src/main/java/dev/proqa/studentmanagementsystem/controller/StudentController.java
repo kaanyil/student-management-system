@@ -44,6 +44,7 @@ public class StudentController {
         return new ResponseEntity<>(students, HttpStatus.OK);
     }
 
+/*
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('STUDENT')")
@@ -90,6 +91,7 @@ public class StudentController {
         map.put("success", true);
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
+*/
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
