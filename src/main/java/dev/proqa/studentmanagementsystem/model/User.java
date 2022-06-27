@@ -1,9 +1,6 @@
 package dev.proqa.studentmanagementsystem.model;
 
 
-
-
-
 import dev.proqa.studentmanagementsystem.model.enumeration.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,6 +24,7 @@ public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id", nullable = false)
     private Long id;
 
     @Size(max = 15)
@@ -91,9 +89,12 @@ public class User implements Serializable {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "role_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles",
+    joinColumns = @JoinColumn(name="user_id"),
+    inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Role role;
+
 
 
     public User(String firstName, String lastName, String email, String username, String password,
@@ -133,5 +134,6 @@ public class User implements Serializable {
         this.role = role;
 
     }
+
 
 }

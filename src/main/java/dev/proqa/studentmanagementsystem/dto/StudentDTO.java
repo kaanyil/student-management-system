@@ -15,13 +15,12 @@ public class StudentDTO {
 
     private Long id;
     private UserDTO userId;
-    private Department department;
+    private Department departmentId;
 
     public StudentDTO(Student student) {
         this.id = student.getId();
         this.userId = new UserDTO(student.getUserId());
-        this.department = student.getDepartmentId();
+        this.departmentId = student.getDepartmentId();
     }
-
 
 }

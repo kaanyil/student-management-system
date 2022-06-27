@@ -1,6 +1,12 @@
 package dev.proqa.studentmanagementsystem.controller;
 
+import dev.proqa.studentmanagementsystem.dto.AdminDTO;
 import dev.proqa.studentmanagementsystem.dto.StudentDTO;
+import dev.proqa.studentmanagementsystem.dto.UserDTO;
+import dev.proqa.studentmanagementsystem.model.Role;
+import dev.proqa.studentmanagementsystem.model.enumeration.UserRole;
+import dev.proqa.studentmanagementsystem.repository.RoleRepository;
+import dev.proqa.studentmanagementsystem.repository.UserRepository;
 import dev.proqa.studentmanagementsystem.service.StudentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,86 +28,29 @@ import java.util.Map;
 public class StudentController {
 
     private final StudentService studentService;
+    private final UserRepository userRepo;
+    private final RoleRepository roleRepo;
 
-    @GetMapping("/{id}/auth}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT')")
+    @GetMapping("/{id}/auth")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<StudentDTO> getStudentById(@PathVariable Long id){
         final StudentDTO student = studentService.findById(id);
         return new ResponseEntity<>(student, HttpStatus.OK);
     }
 
-    @GetMapping("/{userId}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT')")
-    public ResponseEntity<StudentDTO> getSecretaryByUserIdAuth(@PathVariable Long userId){
-        StudentDTO student = studentService.findByUserId(userId);
-        return new ResponseEntity<>(student, HttpStatus.OK);
-    }
-
-    @GetMapping("/all")
+    @PostMapping("/add/auth")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<StudentDTO>> getAllStudents(){
-        final List<StudentDTO> students = studentService.findAll();
-        return new ResponseEntity<>(students, HttpStatus.OK);
-    }
+    public ResponseEntity<Map<String, Boolean>> addStudent(@Valid @RequestBody StudentDTO studentDTO) {
 
-/*
-
-    @PostMapping("/add")
-    @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<Map<String, Boolean>> addStudent(HttpServletRequest request,
-                                                             @Valid @RequestBody StudentDTO student) {
-        Long userId = (Long) request.getAttribute("id");
-        studentService.addStudent(userId, student);
+        Long userId = studentDTO.getId();
+        studentService.addDepartment(userId, studentDTO);
 
         Map<String, Boolean> map = new HashMap<>();
-        map.put("success", true);
+        map.put("Student added successfully!", true);
+
         return new ResponseEntity<>(map, HttpStatus.CREATED);
     }
 
-    @PostMapping("/{userId}/add")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT')")
-    public ResponseEntity<Map<String, Boolean>> addStudentAuth(@PathVariable Long userId,
-                                                                 @Valid @RequestBody StudentDTO student) {
-        studentService.addStudent(userId, student);
-
-        Map<String, Boolean> map = new HashMap<>();
-        map.put("success", true);
-        return new ResponseEntity<>(map, HttpStatus.CREATED);
-    }
-
-    @PutMapping("")
-    @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<Map<String, Boolean>> updateSecretary(HttpServletRequest request,
-                                                                @Valid @RequestBody StudentDTO student) {
-        Long userId = (Long) request.getAttribute("id");
-        studentService.updateStudent(userId, student);
-
-        Map<String, Boolean> map = new HashMap<>();
-        map.put("success", true);
-        return new ResponseEntity<>(map, HttpStatus.OK);
-    }
-
-    @PutMapping("/{userId}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT')")
-    public ResponseEntity<Map<String, Boolean>> updateSecretaryAuth(@PathVariable Long userId,
-                                                                    @Valid @RequestBody StudentDTO student) {
-        studentService.updateStudent(userId, student);
-
-        Map<String, Boolean> map = new HashMap<>();
-        map.put("success", true);
-        return new ResponseEntity<>(map, HttpStatus.OK);
-    }
-*/
-
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Map<String, Boolean>> deleteSecretary(@PathVariable Long id) {
-        studentService.deleteById(id);
-
-        Map<String, Boolean> map = new HashMap<>();
-        map.put("success", true);
-        return new ResponseEntity<>(map, HttpStatus.OK);
-    }
 
 
 }

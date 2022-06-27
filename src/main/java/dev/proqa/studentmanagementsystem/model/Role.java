@@ -21,7 +21,6 @@ public class Role {
     @Column(length = 20)
     private UserRole userRole;
 
-
     @Override
     public String toString() {
         return "Role{" +

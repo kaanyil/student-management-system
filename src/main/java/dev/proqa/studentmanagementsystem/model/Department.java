@@ -25,7 +25,7 @@ public class Department implements Serializable {
     @Column(length = 30, nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "departmentId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "departmentId", cascade = CascadeType.ALL)
     private List<Student> students;
 
     public Department(String name) {
